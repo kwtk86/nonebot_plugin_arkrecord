@@ -78,7 +78,7 @@ def write2xlsx(file_path:str, headers:list, info:list):
 
 def export_record2file(db:sq.Connection, info:list, qq_id:str):
     try:
-        db_reader = ArkDBReader(db, info[0], info[1], float('inf'), 'all', tot_pool_info)
+        db_reader = ArkDBReader(db, info[2], info[0], float('inf'), 'all', tot_pool_info)
         res = db_reader.export_query()
         headers = ['寻访编号', 'uid', '卡池', '干员', '星级',
                 '是否为新干员','寻访时间','限定类型']
@@ -103,6 +103,7 @@ def read_token_from_db(db:sq.Connection, qq_id:str):
         sql = f"select * from {qq_user_table} \
             where {qq_id_field} = \'{qq_id}\';"
         cursor.execute(sql)
+        #user_name token user_id channel
         res = cursor.fetchone()[1:]
     except:
         raise RuntimeError("获取已储存的token失败")

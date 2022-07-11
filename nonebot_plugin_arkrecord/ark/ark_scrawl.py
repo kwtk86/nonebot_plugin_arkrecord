@@ -61,7 +61,7 @@ def user_ark_analyser(db:sq.Connection, user_info:str, max_read_count = float('i
     Returns:
         _type_: _description_
     """
-    logger.info(user_info)
+    # logger.info(user_info)
     user_name, token, user_id, channel = user_info
     # 获取官网寻访记录
     warning_info, record_info_list = url_scrawler(token, channel)
