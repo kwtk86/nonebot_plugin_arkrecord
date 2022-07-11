@@ -17,13 +17,16 @@
 当前版本不支持自动更新卡池信息及干员头像资源。如果有新增干员，可以在PRTS下载干员头像，参照`resource/profile`中的命名规则命名。如果没有可用头像，将以海猫头像代替
 
 ## **插件部署方法**
-在bot.py文件夹下
+
+在命令行（cmd）中 **推荐*
+
+`pip install nonebot_plugin_arkrecord`
+
+或bot.py文件夹下
 
 `git clone https://github.com/zheuziihau/nonebot_plugin_arkrecord`
 
-或在命令行（cmd）中
 
-`pip install nonebot_plugin_arkrecord`
 
 载入插件方式与载入其他插件方式相同
 
