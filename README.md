@@ -76,8 +76,6 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 ### **其他功能**
 使用`随机干员`命令，随机给出一张干员头像
 
-
-
 ## **丨未来更新计划**
 
 - 暂无，欢迎提issue
