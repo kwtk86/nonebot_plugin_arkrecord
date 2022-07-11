@@ -1,36 +1,39 @@
-# **nonebot_plugin_arkrecord**
-欢迎使用明日方舟抽卡分析nonebot插件 beta1.0
+<h1 align="center"><b>nonebot_plugin_arkrecord</b></h1>
+<p align="center">
+    <img src="https://img.shields.io/badge/Python-3.9+-yellow" alt="python">
+    <img src="https://img.shields.io/badge/Nonebot-2.0.0b4-green" alt="python">
+    <img src="https://img.shields.io/badge/Onebot-11-blue" alt="python">
+</p>
+<h2 align="center"><b>欢迎使用明日方舟抽卡分析NoneBot2插件!</b></h2>
+<h4 align="center">本插件为基于python3.9开发的NoneBot2插件，NoneBot2适配器为OneBotV11
+</h4>
 
-## **插件部署说明**
-本插件基于python3.9开发，主要依赖项包括：
 
-- numpy
-- matplotlib
-- PIL
-- pysqlite3
-- XlsxWriter
+## **丨插件部署说明**
 
-本插件依赖于sqlite数据库，在Ubuntu环境下无需额外配置；在windows下，参考网络资源安装sqlite数据库后即可，无需配置数据库环境
+如果你还没有安装NoneBot2，可以参考[NoneBot2官网](https://nb2.baka.icu/)配置NoneBot2后再安装本插件
+
+本插件依赖于sqlite数据库，参考网络资源（如[菜鸟教程](https://www.runoob.com/sqlite/sqlite-installation.html)）安装SQLite数据库并设置环境变量（windows）后即可，无需配置数据库环境
 
 如需修改数据库文件名称，可以修改 `ark/ark_setting.py` 中的 `arkgacha_db_path`项
 
-当前版本不支持自动更新卡池信息及干员头像资源。如果有新增干员，可以在PRTS下载干员头像，参照`resource/profile`中的命名规则命名。如果没有可用头像，将以海猫头像代替
+输出时，如果没有可用干员头像，将以海猫头像代替
 
-## **插件部署方法**
+## **丨插件部署方法**
 
-在命令行（cmd）中 **推荐*
+在命令行（cmd）中
 
-`pip install nonebot_plugin_arkrecord`
+``` shell
+pip install nonebot_plugin_arkrecord
+```
 
-或bot.py文件夹下
+载入插件方式与载入其他插件方式相同，即在NoneBot2的`bot.py`中添加一行
 
-`git clone https://github.com/zheuziihau/nonebot_plugin_arkrecord`
+```python
+nonebot.load_plugin('nonebot_plugin_arkrecord')
+```
 
-
-
-载入插件方式与载入其他插件方式相同
-
-## **插件使用方法**
+## **丨插件使用方法**
 ### **token设置**
 
 每个用户第一次使用时，需要设置token。
@@ -47,9 +50,9 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 或`方舟寻访token 你的token`进行设置
 
 如网页中内容为
-
-`{"status":0,"msg":"OK","data":{"token":"example123456789"}}`
-
+```json
+{"status":0,"msg":"OK","data":{"token":"example123456789"}}
+```
 则使用命令 `方舟抽卡token example123456789`， 如果间隔超**3天**再次使用，建议重新使用上述方式设置token
 ### **寻访记录分析**
 
@@ -75,18 +78,18 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 
 
 
-## **未来更新计划**
+## **丨未来更新计划**
 
 - 暂无，欢迎提issue
 
-## **参考资料**
+## **丨参考**
 作图代码参考于
 
-[nonebot-plugin-gachalogs](https://github.com/monsterxcn/nonebot-plugin-gachalogs)
+- [nonebot-plugin-gachalogs](https://github.com/monsterxcn/nonebot-plugin-gachalogs)
 
-[nonebot_plugin_gamedraw](https://github.com/HibiKier/nonebot_plugin_gamedraw)
+- [nonebot_plugin_gamedraw](https://github.com/HibiKier/nonebot_plugin_gamedraw)
 
-## **开发人员信息**
+## **丨开发人员信息**
 主体开发[本人](https://github.com/zheuziihau)
 
 美术资源及需求设计 [@Alnas1](https://github.com/Alnas1)
