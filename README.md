@@ -8,7 +8,6 @@
 <h4 align="center">本插件为基于python3.9开发的NoneBot2插件，NoneBot2适配器为OneBotV11
 </h4>
 
-
 ## **丨插件部署说明**
 
 如果你还没有安装NoneBot2，可以参考[NoneBot2官网](https://nb2.baka.icu/)配置NoneBot2后再安装本插件
@@ -18,6 +17,9 @@
 如需修改数据库文件名称，可以修改 `ark/ark_setting.py` 中的 `arkgacha_db_path`项
 
 输出时，如果没有可用干员头像，将以海猫头像代替
+
+
+
 
 ## **丨插件部署方法**
 
@@ -61,6 +63,8 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 还可以使用`方舟抽卡分析 数字`，分析最近一定抽数的寻访情况
 
 如`方舟抽卡分析 100`分析最近100抽的情况
+
+![示例输出](./nonebot_plugin_arkrecord/res_file/record_image/record_img_870599048.png)
 
 ### **更新卡池信息与干员头像**
 
