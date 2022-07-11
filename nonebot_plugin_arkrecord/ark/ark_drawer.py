@@ -11,7 +11,7 @@ from math import ceil
 from .ark_setting import * 
 
 """ 
-作图
+利用PIL和PLT制图
 """
 
 ark_font_entry = fm.FontEntry(ark_text_font_path, 'lxgw')

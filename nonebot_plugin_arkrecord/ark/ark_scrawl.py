@@ -1,5 +1,4 @@
-import requests as req, time
-import json, urllib
+import requests as req, time, json, urllib
 from typing import Literal
 from .ark_drawer import ArkImage
 from .ark_db import *
@@ -12,7 +11,7 @@ __all__ = ["check_pool_name", "url_scrawler", "user_ark_analyser"]
 
 def check_pool_name(pool_name):
     """_summary_
-    检查卡池名称是否正确
+    检查卡池名称是否正确 目前用不到了
     """
     if pool_name not in tot_pool_info.keys():  
         error_info = "错误的卡池名称！现有卡池名称如下:\n"

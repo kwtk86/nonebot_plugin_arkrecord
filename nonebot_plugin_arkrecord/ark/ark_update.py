@@ -10,7 +10,6 @@ from collections import defaultdict as ddict
 
 __all__ = ['ark_update_handle', 'ark_update_handle']
 
-
 def get_prts_pool_info(pinfo:dict):
     """获取prts中的卡池信息"""
     prts_url = "https://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF"
@@ -31,9 +30,8 @@ def get_prts_pool_info(pinfo:dict):
                 continue
     return pinfo
 
-
 def update_pool_info():
-    #更新卡池信息
+    """更新卡池信息"""
     with open(tot_pool_info_file, 'r', encoding='utf-8') as fj:
         try:
             pool_info = json.load(fj)
@@ -43,7 +41,6 @@ def update_pool_info():
     with open(tot_pool_info_file, 'w', encoding='utf-8') as fj:
         json.dump(pool_info, fj, ensure_ascii=False)
     
-
 def read_cur_profiles():
     """获取已有头像对应的干员名称"""
     pro_names = ddict(int, {p.split('.')[0].split('_')[1]:1 for p in os.listdir(operator_profile_dir)})

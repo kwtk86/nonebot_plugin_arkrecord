@@ -50,9 +50,7 @@ if not os.path.exists(record_img_dir):os.makedirs(record_img_dir)
 output_csv_dir = os.path.join(res_dir, 'output_csv')
 if not os.path.exists(output_csv_dir):os.makedirs(output_csv_dir)
 
-
-
-"""数据库表、字段名称"""
+"""数据库表、字段名称 以后可能改成字典"""
 """
 qq_user
 """

@@ -7,13 +7,11 @@ from .ark_db import *
 from .ark_scrawl import *
 from .ark_setting import *
 
-
 user_token_event = on_keyword(['方舟抽卡token', '方舟寻访token'],priority=50)
 @user_token_event.handle()
 async def user_token_handle(bot: Bot, event: Event):
     qq_id = event.get_user_id()
     user_token = str(event.get_message()).split(' ')[1].strip()
-
     try:
         write_token2db(arkgacha_db, qq_id, user_token)
     except Exception as e:
@@ -33,7 +31,7 @@ user_export_event = on_keyword(['方舟抽卡导出', '方舟寻访导出'],prio
 @user_export_event.handle()
 async def user_export_handle(bot: Bot, event: Event):
     qq_id = event.get_user_id()
-    if isinstance(event, PrivateMessageEvent):
+    if isinstance(event, PrivateMessageEvent):#gocq不支持私聊传文件
         await user_analysis_event.finish(\
             Message(\
                 f'[CQ:at,qq={qq_id}]暂不支持私聊传文件，可以创建单人群聊后使用命令'\

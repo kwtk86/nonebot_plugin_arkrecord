@@ -3,6 +3,7 @@ import xlsxwriter as xlw, urllib
 from math import ceil
 from .ark_setting import *
 from nonebot.log import logger
+
 """ 
 读写数据库
 """
@@ -31,16 +32,19 @@ def get_user_uid(token:str):
         }}'''.format(token)
     content = req.post(base_url, payload).content#访问官服
     page_content = json.loads(content)
-    if page_content['status']!=0:#b服
-        token = urllib.parse.unquote(token)
-        payload = {'token':token}
-        content = req.post(base_url, payload).content
-        page_content = json.loads(content)
-        assert page_content['status'] == 0, "无效token"
-    user_info_source = page_content.get('data')
-    user_info['uid'] = user_info_source.get('uid')
-    user_info['name'] = user_info_source.get('nickName')
-    user_info['channelMasterId'] = user_info_source.get('channelMasterId')
+    try:
+        if page_content['status']!=0:#b服
+            token = urllib.parse.unquote(token)
+            payload = {'token':token}
+            content = req.post(base_url, payload).content
+            page_content = json.loads(content)
+            assert page_content['status'] == 0, "无效token"
+        user_info_source = page_content.get('data')
+        user_info['uid'] = user_info_source.get('uid')
+        user_info['name'] = user_info_source.get('nickName')
+        user_info['channelMasterId'] = user_info_source.get('channelMasterId')
+    except:
+        raise RuntimeError("无效token")
     return user_info
 
 def write_token2db(db:sq.Connection, qq_id:str, token:str):

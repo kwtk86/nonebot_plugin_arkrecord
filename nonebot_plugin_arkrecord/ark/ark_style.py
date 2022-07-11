@@ -17,6 +17,8 @@ text_fcolor = '#f2f2f2' #全局文字颜色
 pie_percent_color = 'white'#图表百分比颜色
 op_fcolor = '#1f1f1f' #干员头像底图颜色#333333
 star_colors ={ #干员头像框颜色
+            1:'#fafafa',#4d4d4d
+            2:'#fafafa',#4d4d4d
             3:'#bfbdb4',#4d4d4d
             4:'#7c6db9',#9f496e
             5:'#deab5f',#d98666
