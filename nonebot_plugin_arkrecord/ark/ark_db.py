@@ -135,9 +135,8 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str):
                 exclusive_name =  draw_pool if tot_pool_info[draw_pool]['is_exclusive'] else exclusive_common_name
             except:
                 raise RuntimeError("pool")
-            for i, character in enumerate(char_info):
-                #为方便排序，这里是的id反着存的
-                draw_id = "{}_{}".format(base_draw_id, 9-i)
+            for i, character in enumerate(char_info):              #为方便排序，这里是的id反着存的
+                draw_id = "{}_{}".format(base_draw_id, i)#
                 time_local = time.localtime(base_draw_id)
                 dt = time.strftime("%Y-%m-%d %H:%M:%S",time_local)      
                 value_sql = f"(\'{draw_id}\', \'{dt}\', \'{user_id}\', \'{draw_pool}\', \
@@ -297,12 +296,16 @@ class ArkDBReader():
         star_info.sort()
         tmp_lst = {'desc':[], 
                    'count':[], 
+                   'avg':[],
                    'text':f'',
                    'title':f'星级分布'}
         for star in star_info:
             tmp_lst['desc'].append(f"{star[0]}星")
             tmp_lst['count'].append(star[1])
-            tmp_lst['text'] += f"{star[1]}个{star[0]}星\n\n"
+            avg = self.max_record_count/star[1]
+            tmp_lst['avg'].append(avg)
+            star_desc = f"{star[1]}个{star[0]}星"
+            tmp_lst['text'] += f"{star_desc:8}{avg:.1f}抽/个\n\n"
         self.query_result['star_info'] = tmp_lst
     
     def char_query(self, query_params:dict):
@@ -311,14 +314,15 @@ class ArkDBReader():
         tmp_info = {'chars':[], 'count':0}
         #遍历普通池和每个限定池
         for pool in self.pool_in_view:
-            char_sql = f"select {char_name_field}, {timestamp_field}, {star_field}, {is_new_field}, {pool_name_field} \
+            char_sql = f"select {char_name_field}, {timestamp_field}, {star_field}, {is_new_field}, {pool_name_field}, {record_id_field} \
                 from {self.view_name} \
                 where {exclusive_field} = \'{pool}\'    \
-                order by {timestamp_field} desc"
+                order by {record_id_field} desc"
             self.cursor.execute(char_sql)
             char_info_lst = list(self.cursor.fetchall())
             last_mark_idx = 1e20#上一次获得六星时的序号
-            for idx, char_info in enumerate(char_info_lst[::-1]):#反过来遍历，以统计抽数
+            char_info_lst = char_info_lst[::-1]
+            for idx, char_info in enumerate(char_info_lst):#反过来遍历，以统计抽数
                 if query_params['filter_func'](char_info):#如果是新角色或者六星角色
                     indi_info = {}
                     #年月日
@@ -329,6 +333,7 @@ class ArkDBReader():
                     indi_info['name'] = f"{char_info[0]}"
                     indi_info['star'] = char_info[2]
                     indi_info['pool'] = char_info[4]
+                    indi_info['record_id'] = char_info[5]
                     # indi_info['date'] = idx#用于排序十连
                     if query_params['cost_statis']:
                         #统计于最近第几抽获得
@@ -346,7 +351,7 @@ class ArkDBReader():
         if not tmp_info['chars']:
             tmp_info['describe'] = f"没有获得{query_params['op_type']}\n"
         else:
-            tmp_info['chars'].sort(key = lambda item:item['date'], reverse = True)
+            tmp_info['chars'].sort(key = lambda item:item['record_id'], reverse = True)
             tmp_info['chars'] = tmp_info['chars'][:max_char_count]
             tmp_info['describe'] = f"获得了{len(tmp_info['chars'])}个{query_params['op_type']}\n"
         self.query_result[query_params['result_name']] = tmp_info
@@ -355,10 +360,10 @@ class ArkDBReader():
         """查询卡池水位情况"""
         tmp_info = {'text':'', 'title':f"卡池水位情况"}
         for pool in self.pool_in_view:
-            char_sql = f"select {char_name_field}, {timestamp_field}, {star_field} \
+            char_sql = f"select {char_name_field}, {timestamp_field}, {star_field}, {record_id_field} \
                 from {self.view_name} \
                 where {exclusive_field} = \'{pool}\'    \
-                order by {timestamp_field} desc"
+                order by {record_id_field} desc"
             self.cursor.execute(char_sql)
             char_info_lst = list(self.cursor.fetchall())
             for i, char in enumerate(char_info_lst):

@@ -100,7 +100,7 @@ histo_pool_p = {
 
 #星级描述样式
 desc_title_fsize_prop = 0.11
-desc_text_fsize_prop = 0.09
+desc_text_fsize_prop = 0.08
 desc_w_prop = 0.6
 desc_star_p ={
     'parts':['title', 'text'],
