@@ -14,7 +14,7 @@
 
 本插件依赖于sqlite数据库，参考网络资源（如[菜鸟教程](https://www.runoob.com/sqlite/sqlite-installation.html)）安装SQLite数据库并设置环境变量（windows）后即可，无需配置数据库环境
 
-如需修改数据库文件名称，可以修改 `ark/ark_setting.py` 中的 `arkgacha_db_path`项
+如需修改数据库文件名称，可以修改 `./ark/ark_setting.py` 中的 `arkgacha_db_path`项
 
 输出时，如果没有可用干员头像，将以海猫头像代替
 
