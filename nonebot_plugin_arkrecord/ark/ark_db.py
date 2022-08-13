@@ -80,9 +80,9 @@ def write2xlsx(file_path:str, headers:list, info:list):
         row+=1
     wb.close()
 
-def export_record2file(db:sq.Connection, info:list, qq_id:str):
+def export_record2file(db:sq.Connection, info:list, qq_id:str, private_tot_pool_info:dict):
     try:
-        db_reader = ArkDBReader(db, info[2], info[0], float('inf'), 'all', tot_pool_info)
+        db_reader = ArkDBReader(db, info[2], info[0], float('inf'), 'all', private_tot_pool_info)
         res = db_reader.export_query()
         headers = ['寻访编号', 'uid', '卡池', '干员', '星级',
                 '是否为新干员','寻访时间','限定类型']
@@ -114,7 +114,7 @@ def read_token_from_db(db:sq.Connection, qq_id:str):
     assert res, '请先使用 方舟抽卡帮助 查看帮助或使用 方舟抽卡token + 你的token 进行设置'
     return res
 
-def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str):
+def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str, private_tot_pool_info:dict):
     """_summary_
     将单次爬取到的寻访记录写入数据库
     Args:
@@ -132,9 +132,10 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str):
             draw_pool = draw['pool']
             char_info = draw['chars']
             try:
-                exclusive_name =  draw_pool if tot_pool_info[draw_pool]['is_exclusive'] else exclusive_common_name
+                
+                exclusive_name =  draw_pool if private_tot_pool_info[draw_pool]['is_exclusive'] else exclusive_common_name
             except:
-                raise RuntimeError("pool")
+                raise RuntimeError("pool" + draw_pool)
             for i, character in enumerate(char_info):              #为方便排序，这里是的id反着存的
                 draw_id = "{}_{}".format(base_draw_id, i)#
                 time_local = time.localtime(base_draw_id)
@@ -148,7 +149,7 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str):
         db.commit()
     except Exception as e:
         logger.error(e)
-        if str(e) == 'pool':
+        if 'pool' in str(e):
             raise RuntimeError("寻访记录中有未知的卡池,请使用 方舟卡池更新 命令尝试更新卡池", )
         raise RuntimeError("数据库写入失败")    
     
@@ -161,13 +162,13 @@ class ArkDBReader():
                  user_name:str,
                  max_record_count:str,
                  target_pool_name:str,
-                 tot_pool_info:str) -> None:
+                 private_tot_pool_info:dict) -> None:
         self.db = db 
         self.user_id = user_id 
         self.user_name = user_name
         self.max_record_count = max_record_count
         self.target_pool_name = target_pool_name
-        self.tot_pool_info = tot_pool_info
+        self.private_tot_pool_info = private_tot_pool_info
         #查询用cursor
         self.cursor = self.db.cursor()
         #记录次数

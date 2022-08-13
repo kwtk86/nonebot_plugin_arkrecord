@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/Onebot-11-blue" alt="python">
 </p>
 <h2 align="center"><b>欢迎使用明日方舟抽卡分析NoneBot2插件!</b></h2>
-<h4 align="center">本插件为基于python3.9开发的NoneBot2插件，NoneBot2适配器为OneBotV11
+<h4 align="center">本插件为基于python3.9开发的NoneBot2插件，NoneBot2适配器为OneBotV11，当前版本V1.6.0
 </h4>
 
 ## **丨插件部署说明**
@@ -13,8 +13,6 @@
 如果你还没有安装NoneBot2，可以参考[NoneBot2官网](https://nb2.baka.icu/)配置NoneBot2后再安装本插件
 
 本插件依赖于sqlite数据库，参考网络资源（如[菜鸟教程](https://www.runoob.com/sqlite/sqlite-installation.html)）安装SQLite数据库并设置环境变量（windows）后即可，无需配置数据库环境
-
-如需修改数据库文件名称，可以修改 `./ark/ark_setting.py` 中的 `arkgacha_db_path`项
 
 输出时，如果没有可用干员头像，将以海猫头像代替
 
@@ -80,9 +78,10 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 ### **其他功能**
 使用`随机干员`命令，随机给出一张干员头像
 
-## **丨未来更新计划**
+## **丨更新日志**
 
-- 暂无，欢迎提issue
+- V1.6.0 修复了卡池更新后必须重新启动才能获取更新后卡池信息的bug
+- V1.6.0 数据库文件不再存放在```/resource```，迁移至 ```C://USERS/{USER_NAME}/.arkrecord```(Windows),```/root/.arkrecord```(Linux)存放。
 
 ## **丨参考**
 作图代码参考于

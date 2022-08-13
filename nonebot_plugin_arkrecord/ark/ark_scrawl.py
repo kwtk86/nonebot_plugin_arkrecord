@@ -7,17 +7,18 @@ from .ark_utils import *
 
 from nonebot.log import logger
 
-__all__ = ["check_pool_name", "url_scrawler", "user_ark_analyser"]
+__all__ = ["url_scrawler", "user_ark_analyser"]
 
-def check_pool_name(pool_name):
-    """_summary_
-    检查卡池名称是否正确 目前用不到了
-    """
-    if pool_name not in tot_pool_info.keys():  
-        error_info = "错误的卡池名称！现有卡池名称如下:\n"
-        pool_name_string = '\n'.join(tot_pool_info[:-1])
-        return False, error_info + pool_name_string
-    return True, ""
+# def check_pool_name(pool_name):
+#     """_summary_
+#     检查卡池名称是否正确 目前用不到了
+#     deprecated
+#     """
+#     if pool_name not in tot_pool_info.keys():  
+#         error_info = "错误的卡池名称！现有卡池名称如下:\n"
+#         pool_name_string = '\n'.join(tot_pool_info[:-1])
+#         return False, error_info + pool_name_string
+#     return True, ""
   
 def url_scrawler(token:str, channel:Literal[1,2]):
     """_summary_
@@ -65,10 +66,12 @@ def user_ark_analyser(db:sq.Connection, user_info:str, max_read_count = float('i
     # 获取官网寻访记录
     warning_info, record_info_list = url_scrawler(token, channel)
     yield warning_info
+    private_tot_pool_info = get_tot_pool_info()
+
     if record_info_list:
-        url_db_writer(db, record_info_list, user_id)
+        url_db_writer(db, record_info_list, user_id, private_tot_pool_info)
     # 读数据库
-    db_reader = ArkDBReader(db, user_id, user_name, max_read_count, pool_name, tot_pool_info)
+    db_reader = ArkDBReader(db, user_id, user_name, max_read_count, pool_name, private_tot_pool_info)
     db_reader.query_all_items()
     query_info = db_reader.query_result
     # 生成图片

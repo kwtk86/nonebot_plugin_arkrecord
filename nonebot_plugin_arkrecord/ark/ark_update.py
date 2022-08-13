@@ -1,6 +1,6 @@
 import os,sys,json
 import requests as req
-from .ark_setting import operator_profile_dir, tot_pool_info_file
+from .ark_setting import operator_profile_dir, tot_pool_info_file, get_tot_pool_info, tot_pool_info
 from nonebot.log import logger
 from nonebot.plugin import on_keyword
 from nonebot.adapters.onebot.v11 import Bot, Event, PrivateMessageEvent
@@ -24,7 +24,7 @@ def get_prts_pool_info(pinfo:dict):
         for tr in trs[1:]:
             try:
                 td0 = tr.find_all('td')[0]
-                pname = td0.find('a').attrs['title'].split('/')[1].strip()
+                pname = td0.find('a').attrs['title'].strip()
                 pinfo[pname] = {'is_exclusive':True if g_type else False}
             except:
                 continue
@@ -40,6 +40,8 @@ def update_pool_info():
     pool_info = get_prts_pool_info(pool_info)
     with open(tot_pool_info_file, 'w', encoding='utf-8') as fj:
         json.dump(pool_info, fj, ensure_ascii=False)
+    # get_tot_pool_info(tot_pool_info_file)
+    
     
 def read_cur_profiles():
     """获取已有头像对应的干员名称"""
@@ -88,7 +90,7 @@ async def ark_update_handle(bot: Bot, event: Event):
             op_names = ' '.join(updated[1])
             info = f"更新成功！获取到干员 {op_names} 的头像及新卡池信息"
         else:
-            info = "成功尝试更新，但是没有获取到新内容"
+            info = "成功尝试更新，但是没有获取到新的头像"
     except Exception as e:
         logger.error(str(e) + "获取更新失败！")
         await ark_update_event.finish(\
