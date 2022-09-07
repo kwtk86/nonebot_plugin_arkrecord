@@ -33,6 +33,8 @@ pip install nonebot_plugin_arkrecord
 nonebot.load_plugin('nonebot_plugin_arkrecord')
 ```
 
+**如果你在linux下部署，且部署用户不为```root```，需要更改```./nonebot_plugin_arkrecord/ark/ark_setting.py```中第十行的变量```linux_user_name```为你的部署用户名**
+
 ## **丨插件使用方法**
 ### **token设置**
 
@@ -82,6 +84,12 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 
 - V1.6.0 修复了卡池更新后必须重新启动才能获取更新后卡池信息的bug
 - V1.6.0 数据库文件不再存放在```/resource```，迁移至 ```C://USERS/{USER_NAME}/.arkrecord```(Windows),```/root/.arkrecord```(Linux)存放。
+- V1.6.1 修改了卡池限定类型判断逻辑。修复了“联合寻访”卡池PRTS名称与官方名称不一致导致的无法进行抽卡分析的问题
+
+
+## **| 更新计划**
+
+- V1.6.2 报错日志系统
 
 ## **丨参考**
 作图代码参考于

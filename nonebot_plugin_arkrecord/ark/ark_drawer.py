@@ -44,14 +44,13 @@ def plt_tick_font(font_size:int = 16, font_path:str = ark_text_font_path):
 
 def hex2rgb(hex:str):
     """16进制转RGB"""
-    r = int(hex[1:3],16)
-    g = int(hex[3:5],16)
+    r = int(hex[1:3], 16)
+    g = int(hex[3:5], 16)
     b = int(hex[5:7], 16)
     return (r,g,b)
 
 class ArkImageDrawer():
     def __init__(self, 
-
                  img_w:int, 
                  img_h:int,
                  img_type = "RGBA",
@@ -64,26 +63,6 @@ class ArkImageDrawer():
                                 (self.img_w, self.img_h), 
                                  self.background_color)
         self.draw = ImageDraw.Draw(self.img)
-
-
-    # def atext(
-    #     self,
-    #     pos: Tuple[int, int],
-    #     text: str,
-    #     font_size: int,
-    #     font_path = ark_text_font_path,
-    #     fill:str='black',
-        
-    # ):
-    #     """
-    #     说明：
-    #         异步 在图片上添加文字
-    #     参数：
-    #         :param pos: 文字位置
-    #         :param text: 文字内容
-    #         :param fill: 文字颜色
-    #     """
-    #     await self.loop.run_in_executor(None,  pos, self.dtext, text, font_size, font_path, fill)
 
     def dtext(
         self,
@@ -103,23 +82,6 @@ class ArkImageDrawer():
         """
         text_font = pil_font(font_size, font_path)
         self.draw.text(pos, text, fill=fill, font=text_font)
-
-    # def apaste(
-    #     self,
-    #     img: Image,
-    #     pos: Optional[Tuple[int, int]] = None,
-    #     alpha: bool = False,
-    # ):
-    #     """
-    #     说明：
-    #         异步 贴图
-    #     参数：
-    #         :param img: 已打开的图片文件，可以为 BuildImage 或 Image
-    #         :param pos: 贴图位置（左上角）
-    #         :param alpha: 图片背景是否为透明
-    #     """
-    #     await self.loop.run_in_executor(None, self.dpaste, img, pos, alpha)
-
     # 贴图
     def dpaste(self,
                 img: Image,
@@ -152,8 +114,9 @@ def round_corner(img:Image,
     """_summary_
     新的开圆角思路
     Args:
-        img (_type_): _description_
-        radii (_type_): _description_
+        img (_type_): 待开圆角的图
+        radii (_type_): 圆角半径
+        back_color:圆角画布背景色
     Returns:
         _type_: _description_
     """
@@ -251,8 +214,8 @@ class CharImage(BaseImage):
         """_summary_
         生成好看的单张头像
         Args:
-            char_name (str): _description_
-            char_star (int): _description_
+            char_name (str): 干员名称
+            char_star (int): 干员星级
 
         Returns:
             _type_: _description_
@@ -295,11 +258,8 @@ class ArkImage(BaseImage):
         save_img_name = f"record_img_{user_id}.png"
         self.save_path = os.path.join(record_img_dir, save_img_name)
         self.aid = ArkImageDrawer(img_wh[0], img_wh[1])
-        
         #在画布上方贴图
         # 读取图片
-
-
         self.info_type_dict ={
             "star":{
                 'cn_desc' : "星级分布",
@@ -459,9 +419,7 @@ class ArkImage(BaseImage):
         ci = CharImage(self.char_line_cnt, char_type, self.record_info, char_drawer_p['radii'])
         char_img = ci.draw_chars()
         char_img = ci.draw_chars()
-        self.aid.dpaste(char_img, char_drawer_p[f"pos_{char_type}"])
-
-         
+        self.aid.dpaste(char_img, char_drawer_p[f"pos_{char_type}"])         
  
     def save(self):
         try:
@@ -471,8 +429,4 @@ class ArkImage(BaseImage):
             return self.save_path
         except Exception as e:
             logger.error(e)
-            raise RuntimeError("保存结果图像失败")
-
-
-
-        
+            raise RuntimeError("保存结果图像失败")     

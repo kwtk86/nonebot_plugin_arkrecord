@@ -21,7 +21,6 @@ def get_user_uid(token:str):
     base_url = 'https://as.hypergryph.com/u8/user/info/v1/basic'
     user_info = {}
     #官服
-
     payload = '''
         {{
             "appId":1,
@@ -51,7 +50,6 @@ def write_token2db(db:sq.Connection, qq_id:str, token:str):
     """_summary_
     向表中写入用户token
     """
-
     response = get_user_uid(token)
     try:
         cursor = db.cursor()
@@ -294,7 +292,6 @@ class ArkDBReader():
         else:
             self.query_result['pool_info'] = {'desc':[self.target_pool_name],'count':[self.max_record_count]}
     
-
     def star_query(self):
         """查询星级分布"""
         star_sql = f"select {star_field}, count(*) from \
@@ -402,9 +399,6 @@ class ArkDBReader():
             tmp_lst.append(desc)
         self.query_result['frequent'] = tmp_lst
     
-    
-    
-    
     def finish(self):
         """查询完成后删除视图"""
         self.check_view()
@@ -422,5 +416,3 @@ class ArkDBReader():
         base_h += int(base_img_h*0.03)
         char_drawer_p['h_int'] = char_drawer_p['h'](char_line_cnt)
         return (base_w, base_h), char_line_cnt
-    
-  

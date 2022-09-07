@@ -24,8 +24,8 @@ def url_scrawler(token:str, channel:Literal[1,2]):
     """_summary_
     爬取官网抽卡记录
     Args:
-        token (str): _description_
-
+        token (str): token
+        channel: 用户官服/B服判据。官服为1，B服为2
     Returns:
         _type_: _description_
     """
@@ -54,9 +54,9 @@ def user_ark_analyser(db:sq.Connection, user_info:str, max_read_count = float('i
     """_summary_
     抽卡分析主函数
     Args:
-        db (pm.Connection): _description_
-        user_info (str): _description_
-        max_read_count (_type_, optional): _description_. Defaults to float('inf').
+        db (pm.Connection): 数据库
+        user_info (str): 用户信息
+        max_read_count (_type_, optional): 最多分析的抽数，默认为无限
 
     Returns:
         _type_: _description_
