@@ -7,7 +7,7 @@ from .ark_style import *
 package_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #资源目录
 resource_dir = os.path.join(package_dir, 'resource')
-
+linux_user_name = 'root'
 
 def get_user_db_path():
     import platform
@@ -15,7 +15,7 @@ def get_user_db_path():
     if os_type == "Windows":
         db_dir = os.path.join(os.path.expanduser("~"), ".arkrecord")
     elif os_type == "Linux":
-        db_dir = "/root/.arkrecord"
+        db_dir = f"/{linux_user_name}/.arkrecord"
     else:
         logger.error("不支持的操作系统！仅限Windows和Linux")
         raise RuntimeError("不支持的操作系统！仅限Windows和Linux")
@@ -42,10 +42,6 @@ def init_db(user_db_path):
 user_db_path = get_user_db_path()
 init_db(user_db_path)
 arkgacha_db = sq.connect(user_db_path)
-
-
-
-
 
 #干员头像目录
 operator_profile_dir = os.path.join(resource_dir, 'profile')

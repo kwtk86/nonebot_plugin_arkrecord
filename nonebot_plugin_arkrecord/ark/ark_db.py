@@ -132,9 +132,12 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str, private_to
             draw_pool = draw['pool']
             char_info = draw['chars']
             try:
-                
-                exclusive_name =  draw_pool if private_tot_pool_info[draw_pool]['is_exclusive'] else exclusive_common_name
+                if "联合行动" in draw_pool:
+                    exclusive_name = exclusive_common_name
+                else:
+                    exclusive_name =  draw_pool if private_tot_pool_info[draw_pool]['is_exclusive'] else exclusive_common_name
             except:
+                # continue
                 raise RuntimeError("pool" + draw_pool)
             for i, character in enumerate(char_info):              #为方便排序，这里是的id反着存的
                 draw_id = "{}_{}".format(base_draw_id, i)#
@@ -150,8 +153,12 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str, private_to
     except Exception as e:
         logger.error(e)
         if 'pool' in str(e):
-            raise RuntimeError("寻访记录中有未知的卡池,请使用 方舟卡池更新 命令尝试更新卡池", )
-        raise RuntimeError("数据库写入失败")    
+            raise RuntimeError(f"寻访记录中有未知的卡池 {draw_pool},请使用 方舟卡池更新 命令尝试更新卡池。\
+                                \n若更新失败，请检查PRTS上是否有此卡池，或卡池名称是否相符。\
+                                \n若对应卡池名称不符，建议联系nonebot管理员进行处理。\
+                                \n管理员可以修改./nonebot_plugin_arkrecord/resource/pool_info.json中的内容以匹配卡池名称。\
+                                \nPRTS卡池信息页面：https://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF", )
+        raise RuntimeError("数据库写入失败，错误信息{e}")    
     
 class ArkDBReader():
     """

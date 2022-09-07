@@ -90,7 +90,7 @@ async def ark_update_handle(bot: Bot, event: Event):
             op_names = ' '.join(updated[1])
             info = f"更新成功！获取到干员 {op_names} 的头像及新卡池信息"
         else:
-            info = "成功尝试更新，但是没有获取到新的头像"
+            info = "成功尝试更新，但是没有获取到新的头像（虽然可能获取到了新的卡池，但是作者太懒，懒得写判断了）"
     except Exception as e:
         logger.error(str(e) + "获取更新失败！")
         await ark_update_event.finish(\
