@@ -17,8 +17,8 @@ def get_user_db_path():
     elif os_type == "Linux":
         db_dir = f"/{linux_user_name}/.arkrecord"
     else:
-        logger.error("不支持的操作系统！仅限Windows和Linux")
-        raise RuntimeError("不支持的操作系统！仅限Windows和Linux")
+        logger.error("不支持的操作系统！开发者仅做了Windows和Linux的适配（由于没有苹果电脑）。建议联系开发者或自行修改源码。")
+        raise RuntimeError("不支持的操作系统！开发者仅做了Windows和Linux的适配（由于没有苹果电脑）。建议联系开发者或自行修改源码。")
     if not os.path.exists(db_dir):
         os.makedirs(db_dir)
     user_db_path = os.path.join(db_dir, 'arkgacha_record16.db')

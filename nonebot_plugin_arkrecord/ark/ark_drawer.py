@@ -294,6 +294,7 @@ class ArkImage(BaseImage):
             self.draw_char_query('newchar')
 
         except Exception as e:
+            logger.error(e)
             raise RuntimeError("绘图错误 " + str(e))
 
     def draw_background(self):

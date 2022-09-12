@@ -95,7 +95,7 @@ async def ark_help_handle(bot: Bot, event: Event):
         f'[CQ:at,qq={event.get_user_id()}]\n欢迎使用明日方舟寻访分析插件！\
                 \n帮助请参看以下图片。图片中涉及的网址为:\
                 \n官网：https://ak.hypergryph.com/\
-                \n官服token获取地址：https://as.hypergryph.com/user/info/v1/token_by_cookie\
+                \n官服token获取地址：https://web-api.hypergryph.com/account/info/hg\
                 \nB服token获取地址：https://web-api.hypergryph.com/account/info/ak-b\n'
     )
     try:

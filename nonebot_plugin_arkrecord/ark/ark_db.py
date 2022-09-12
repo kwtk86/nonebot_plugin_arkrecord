@@ -42,7 +42,8 @@ def get_user_uid(token:str):
         user_info['uid'] = user_info_source.get('uid')
         user_info['name'] = user_info_source.get('nickName')
         user_info['channelMasterId'] = user_info_source.get('channelMasterId')
-    except:
+    except Exception as e:
+        logger.error(e)
         raise RuntimeError("无效token")
     return user_info
 
@@ -60,7 +61,8 @@ def write_token2db(db:sq.Connection, qq_id:str, token:str):
         cursor.execute(sql)
         db.commit()
         return
-    except:
+    except Exception as e:
+        logger.error(e)
         raise RuntimeError("保存token失败")
     # except Exception as e:
     #     logger.warning(e)
@@ -89,6 +91,7 @@ def export_record2file(db:sq.Connection, info:list, qq_id:str, private_tot_pool_
         write2xlsx(out_file_path, headers, res)
         return out_file_path
     except Exception as e:
+        logger.error(e)
         raise RuntimeError("获取/导出记录失败 " + str(e))          
     
 def read_token_from_db(db:sq.Connection, qq_id:str):
@@ -107,7 +110,8 @@ def read_token_from_db(db:sq.Connection, qq_id:str):
         cursor.execute(sql)
         #user_name token user_id channel
         res = cursor.fetchone()[1:]
-    except:
+    except Exception as e:
+        logger.error(e)
         raise RuntimeError("获取已储存的token失败")
     assert res, '请先使用 方舟抽卡帮助 查看帮助或使用 方舟抽卡token + 你的token 进行设置'
     return res
@@ -134,7 +138,8 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str, private_to
                     exclusive_name = exclusive_common_name
                 else:
                     exclusive_name =  draw_pool if private_tot_pool_info[draw_pool]['is_exclusive'] else exclusive_common_name
-            except:
+            except Exception as e:
+                logger.warning(e)
                 # continue
                 raise RuntimeError("pool" + draw_pool)
             for i, character in enumerate(char_info):              #为方便排序，这里是的id反着存的
@@ -156,7 +161,7 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str, private_to
                                 \n若对应卡池名称不符，建议联系nonebot管理员进行处理。\
                                 \n管理员可以修改./nonebot_plugin_arkrecord/resource/pool_info.json中的内容以匹配卡池名称。\
                                 \nPRTS卡池信息页面：https://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF", )
-        raise RuntimeError("数据库写入失败，错误信息{e}")    
+        raise RuntimeError(f"数据库写入失败，错误信息{e}")    
     
 class ArkDBReader():
     """
@@ -409,6 +414,7 @@ class ArkDBReader():
         #根据六星及新干员数量计算输出的图像的高度
         mmax = max(self.query_result['star6char_info']['count'],
                    self.query_result['newchar_info']['count'])
+        mmax = min(20, mmax)#高度不超过20个干员的高度
         char_line_cnt = ceil(mmax/2)#可以排列几行
         base_h += int(1.2*char_title_p['fsize'])
         base_h += get_char_drawer_h(char_line_cnt)

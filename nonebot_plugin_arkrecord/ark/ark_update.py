@@ -8,7 +8,7 @@ from nonebot.adapters.onebot.v11.message import Message, MessageSegment
 from bs4 import BeautifulSoup as bs
 from collections import defaultdict as ddict
 
-__all__ = ['ark_update_handle', 'ark_update_handle']
+__all__ = ['ark_update_handle']
 
 def get_prts_pool_info(pinfo:dict):
     """获取prts中的卡池信息"""
@@ -24,8 +24,9 @@ def get_prts_pool_info(pinfo:dict):
         for tr in trs[1:]:
             try:
                 td0 = tr.find_all('td')[0]
-                pname = td0.find('a').attrs['title'].strip()
-                pinfo[pname] = {'is_exclusive':True if g_type else False}
+                #不知道为什么prts在卡池名称前面加上了 寻访模拟/
+                pname = td0.find('a').attrs['title'].strip().strip("寻访模拟/")
+                pinfo[pname] = {'is_exclusive':True if g_type else False}#判断是否为限定
             except:
                 continue
     return pinfo
@@ -37,6 +38,7 @@ def update_pool_info():
             pool_info = json.load(fj)
         except:#防止出bug为空
             pool_info = {}
+    #从prts获取卡池信息
     pool_info = get_prts_pool_info(pool_info)
     with open(tot_pool_info_file, 'w', encoding='utf-8') as fj:
         json.dump(pool_info, fj, ensure_ascii=False)
