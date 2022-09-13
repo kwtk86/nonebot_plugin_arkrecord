@@ -39,7 +39,7 @@ async def user_export_handle(bot: Bot, event: Event):
             )
     try:
         user_info = read_token_from_db(arkgacha_db, qq_id)
-        response = export_record2file(arkgacha_db, user_info, qq_id)
+        response = export_record2file(arkgacha_db, user_info, qq_id, tot_pool_info)
     except Exception as e:
         logger.error(e)
         await user_analysis_event.finish(\
