@@ -8,6 +8,8 @@
 <h4 align="center">本插件为基于python3.9开发的NoneBot2插件，NoneBot2适配器为OneBotV11，当前版本V1.6.2.2
 </h4>
 
+### **若对插件安装、使用有疑问，或在使用中遇到BUG，欢迎在issue区发问；或直接联系作者：QQ 812325695。我将尽可能地排查并解决问题**
+
 ## **丨插件部署说明**
 
 如果你还没有安装NoneBot2，可以参考[NoneBot2官网](https://nb2.baka.icu/)配置NoneBot2后再安装本插件
@@ -34,7 +36,7 @@
 
 ```/root/.arkrecord``` (Linux)
 
-v1.6.2.2版本 已经将复制命令由```shutil.copy()```更换为系统命令，但仍无法完全保证此现象未来不会重现。如出现无法解决的问题请联系开发者处理解决。
+v1.6.3版本 已经将复制命令由```shutil.copy()```更换为系统命令，但仍无法完全保证此现象未来不会重现。如出现无法解决的问题请联系开发者处理解决。
 
 ## **丨插件部署方法**
 
@@ -66,7 +68,7 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 ***请在浏览器中获取token，避免在QQ打开的网页中获取，否则可能获取无效token***
 
 **token设置方法**：使用插件命令`方舟抽卡token 你的token`(自动识别B服、官服token)
-或`方舟寻访token 你的token`进行设置
+或`方舟寻访token 你的to.ken`进行设置
 
 如网页中内容为
 ```json
@@ -112,6 +114,7 @@ B服：https://web-api.hypergryph.com/account/info/ak-b
 
 ## **| 更新计划**
 
+- 关键参数配置从插件内部移至nonebot的```.env```文件
 - 下一次大版本更新：报错日志系统（由1.6.2推迟）
 
 ## **丨参考**
