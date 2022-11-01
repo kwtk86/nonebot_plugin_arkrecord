@@ -12,6 +12,8 @@ user_token_event = on_keyword(['方舟抽卡token', '方舟寻访token'],priorit
 async def user_token_handle(bot: Bot, event: Event):
     qq_id = event.get_user_id()
     user_token = str(event.get_message()).split(' ')[1].strip()
+    if "content" in user_token:
+        user_token= re.findall(r"content\":\".*\"",user_token)[0][10:][:-11]
     try:
         write_token2db(arkgacha_db, qq_id, user_token)
     except Exception as e:
