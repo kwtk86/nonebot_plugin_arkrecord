@@ -251,10 +251,7 @@
     "能天使": {
         "is_exclusive": true
     },
-    "跨年欢庆 相逢": {
-        "is_exclusive": true
-    },
-    "万象伶仃": {
+    "万象伶仃":{
         "is_exclusive": true
     }
 }

@@ -7,7 +7,13 @@ from nonebot.log import logger
 """ 
 读写数据库
 """
-__all__ = ["get_user_uid", "write_token2db", "read_token_from_db", "export_record2file", "url_db_writer", "ArkDBReader"]
+__all__ = ["get_user_uid", 
+            "write_token2db", 
+            "read_token_from_db", 
+            "export_record2file", 
+            "url_db_writer", 
+            "ArkDBReader",
+            "rewrite_db"]
 
 def get_user_uid(token:str):
     """_summary_
@@ -44,6 +50,7 @@ def get_user_uid(token:str):
         user_info['channelMasterId'] = user_info_source.get('channelMasterId')
     except Exception as e:
         logger.error(e)
+        write_log2file('error', f"{e},无效token")
         raise RuntimeError("无效token")
     return user_info
 
@@ -63,10 +70,8 @@ def write_token2db(db:sq.Connection, qq_id:str, token:str):
         return
     except Exception as e:
         logger.error(e)
+        write_log2file('error', f"{e},保存token失败")
         raise RuntimeError("保存token失败")
-    # except Exception as e:
-    #     logger.warning(e)
-    #     return "保存token失败"
 
 def write2xlsx(file_path:str, headers:list, info:list):
     wb = xlw.Workbook(file_path)
@@ -92,6 +97,7 @@ def export_record2file(db:sq.Connection, info:list, qq_id:str, private_tot_pool_
         return out_file_path
     except Exception as e:
         logger.error(e)
+        write_log2file('error', f"{e},获取或导出记录失败")
         raise RuntimeError("获取/导出记录失败 " + str(e))          
     
 def read_token_from_db(db:sq.Connection, qq_id:str):
@@ -112,6 +118,7 @@ def read_token_from_db(db:sq.Connection, qq_id:str):
         res = cursor.fetchone()[1:]
     except Exception as e:
         logger.error(e)
+        write_log2file('error', f"{e},获取已储存的token失败")
         raise RuntimeError("获取已储存的token失败")
     assert res, '请先使用 方舟抽卡帮助 查看帮助或使用 方舟抽卡token + 你的token 进行设置'
     return res
@@ -140,7 +147,7 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str, private_to
                     exclusive_name =  draw_pool if private_tot_pool_info[draw_pool]['is_exclusive'] else exclusive_common_name
             except Exception as e:
                 logger.warning(e)
-                # continue
+                write_log2file('warning', f"{e},无效token")
                 raise RuntimeError("pool" + draw_pool)
             for i, character in enumerate(char_info):              #为方便排序，这里是的id反着存的
                 draw_id = "{}_{}".format(base_draw_id, i)#
@@ -156,13 +163,47 @@ def url_db_writer(db:sq.Connection, draw_info_list:list, user_id:str, private_to
     except Exception as e:
         logger.error(e)
         if 'pool' in str(e):
+            write_log2file('warning', f"{e}, 未知卡池{draw_pool}")
             raise RuntimeError(f"寻访记录中有未知的卡池 {draw_pool},请使用 方舟卡池更新 命令尝试更新卡池。\
                                 \n若更新失败，请检查PRTS上是否有此卡池，或卡池名称是否相符。\
-                                \n若对应卡池名称不符，建议联系nonebot管理员进行处理。\
-                                \n管理员可以修改./nonebot_plugin_arkrecord/resource/pool_info.json中的内容以匹配卡池名称。\
+                                \n若对应卡池名称不符，可以使用手动添加卡池命令添加卡池（具体请查看帮助）。\
                                 \nPRTS卡池信息页面：https://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF", )
-        raise RuntimeError(f"数据库写入失败，错误信息{e}")    
-    
+        write_log2file('warning', f"{e}, 数据库写入失败")
+        raise RuntimeError(f"数据库写入失败，错误信息{e}")
+
+def rewrite_db(db:sq.Connection, pool_info:json):
+    """
+    更新数据库限定类型（以防万一）
+    """
+    read_sql = f"select * from {ark_record_table}"
+    cursor = db.cursor()
+    cursor.execute(read_sql)
+    records = cursor.fetchall()
+    # 遍历每条记录以更新
+    for i, record in enumerate(records):
+        record_pool_name = record[2]
+        record_lst = list(record)
+        if "联合行动" in record_pool_name: # 联合行动单独处理
+            record_lst[-1] = "常规up池"
+        elif pool_info[record_pool_name]['is_exclusive']: # 限定
+            record_lst[-1] = record_pool_name
+        else:
+            record_lst[-1] = "常规up池"
+        records[i] = record_lst
+    # 重构sql语句
+    base_sql = f"replace into {ark_record_table} values "
+    for record in records:
+        value_sql = f"(\'{record[0]}\', \'{record[1]}\', \'{record[2]}\', \'{record[3]}\', \
+        {record[4]}, {record[5]}, \'{record[6]}\', \'{record[7]}\'),"
+        base_sql += value_sql
+    base_sql = base_sql[:-1]+';'
+    cursor = db.cursor()
+    cursor.execute(base_sql)
+    db.commit()
+    return 0
+
+
+
 class ArkDBReader():
     """
     数据库读取类
@@ -176,7 +217,7 @@ class ArkDBReader():
         self.db = db 
         self.user_id = user_id 
         self.user_name = user_name
-        self.max_record_count = max_record_count
+        # self.max_record_count = max_record_count
         self.target_pool_name = target_pool_name
         self.private_tot_pool_info = private_tot_pool_info
         #查询用cursor
@@ -208,7 +249,8 @@ class ArkDBReader():
         """
         count_sql = f"select count(*) from {ark_record_table} where {user_id_field} = {self.user_id}" 
         self.cursor.execute(count_sql)
-        return self.cursor.fetchone()[0] 
+        record_count = self.cursor.fetchone()[0]
+        return record_count
     
     def check_view(self):
         """_summary_
@@ -251,6 +293,7 @@ class ArkDBReader():
         return res
     
     def query_all_items(self):
+        
         def filter_star6char(info):#判断是否为六星
             return info[2]==6
         def filter_newchar(info):#判断是否为新角色
@@ -333,6 +376,7 @@ class ArkDBReader():
             last_mark_idx = 1e20#上一次获得六星时的序号
             char_info_lst = char_info_lst[::-1]
             for idx, char_info in enumerate(char_info_lst):#反过来遍历，以统计抽数
+                # print(query_params['filter_func'](char_info))
                 if query_params['filter_func'](char_info):#如果是新角色或者六星角色
                     indi_info = {}
                     #年月日

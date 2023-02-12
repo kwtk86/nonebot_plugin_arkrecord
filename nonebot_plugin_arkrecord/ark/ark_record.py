@@ -7,12 +7,23 @@ from .ark_db import *
 from .ark_scrawl import *
 from .ark_setting import *
 
-user_token_event = on_keyword(['方舟抽卡token', '方舟寻访token'],priority=50)
+def parse_user_token(raw_str:str) -> str:
+    """
+    同时支持直接复制token 和 复制整个页面内容
+    """
+    try:
+        json_str = json.loads(raw_str)
+        return json_str['data']['content']
+    except:
+        return raw_str.strip()
+
+user_token_event = on_keyword(['方舟抽卡token', '方舟寻访token'], priority = 80)
 @user_token_event.handle()
 async def user_token_handle(bot: Bot, event: Event):
     qq_id = event.get_user_id()
-    user_token = str(event.get_message()).split(' ')[1].strip()
+    token_str = str(event.get_message()).split(' ')[1]
     try:
+        user_token = parse_user_token(token_str)
         write_token2db(arkgacha_db, qq_id, user_token)
     except Exception as e:
         logger.error(str(e))
@@ -27,7 +38,7 @@ async def user_token_handle(bot: Bot, event: Event):
             )
         )
 
-user_export_event = on_keyword(['方舟抽卡导出', '方舟寻访导出'],priority=50)
+user_export_event = on_keyword(['方舟抽卡导出', '方舟寻访导出'], priority = 80)
 @user_export_event.handle()
 async def user_export_handle(bot: Bot, event: Event):
     qq_id = event.get_user_id()
@@ -56,7 +67,7 @@ async def user_export_handle(bot: Bot, event: Event):
 
 
 
-user_analysis_event = on_keyword(['方舟抽卡分析','方舟寻访分析'],priority=50)
+user_analysis_event = on_keyword(['方舟抽卡分析','方舟寻访分析'], priority = 80)
 @user_analysis_event.handle()
 async def user_analysis_handle(bot: Bot, event: Event):
     qq_id = event.get_user_id()    
@@ -86,11 +97,11 @@ async def user_analysis_handle(bot: Bot, event: Event):
     await user_analysis_event.finish(message_CQ + message_img)
 
 
-ark_help_event = on_keyword(['方舟抽卡帮助','方舟寻访帮助'],priority=50)
+ark_help_event = on_keyword(['方舟抽卡帮助','方舟寻访帮助'], priority = 50)
 @ark_help_event.handle()
 async def ark_help_handle(bot: Bot, event: Event):
     image_file_path = "file:///" + help_img_path
-    logger.info(image_file_path)
+    # logger.info(image_file_path)
     message_CQ = Message(
         f'[CQ:at,qq={event.get_user_id()}]\n欢迎使用明日方舟寻访分析插件！\
                 \n帮助请参看以下图片。图片中涉及的网址为:\

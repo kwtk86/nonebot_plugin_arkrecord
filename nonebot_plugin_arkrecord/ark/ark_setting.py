@@ -1,15 +1,23 @@
 import sqlite3 as sq, os
+import nonebot
 from nonebot.log import logger
 from .ark_utils import *
 from .ark_style import *
+
+# 读取基础配置
+# basic_config = nonebot.get_driver().config
+# if 'arkrecord_linux_user_name' in dir(basic_config):
+#     linux_user_name = basic_config.arkrecord_linux_user_name
+# else:
+#     linux_user_name = 'root'
+linux_user_name = 'root'
 
 #包根目录
 package_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #资源目录
 resource_dir = os.path.join(package_dir, 'resource')
-linux_user_name = 'root'
 
-def get_user_db_path():
+def get_user_config_path(config_file:str):
     import platform
     os_type = platform.system()
     if os_type == "Windows":
@@ -21,7 +29,7 @@ def get_user_db_path():
         raise RuntimeError("不支持的操作系统！开发者仅做了Windows和Linux的适配（由于没有苹果电脑）。建议联系开发者或自行修改源码。")
     if not os.path.exists(db_dir):
         os.makedirs(db_dir)
-    user_db_path = os.path.join(db_dir, 'arkgacha_record16.db')
+    user_db_path = os.path.join(db_dir, config_file)
     return user_db_path 
 
 db_name15 = "arkgacha_record.db"
@@ -39,7 +47,7 @@ def init_db(user_db_path):
         else:
             shutil.copy(arkgacha_db_path16, user_db_path)
 #sqlite文件
-user_db_path = get_user_db_path()
+user_db_path = get_user_config_path('arkgacha_record16.db')
 init_db(user_db_path)
 arkgacha_db = sq.connect(user_db_path)
 
@@ -74,7 +82,6 @@ help_img_path = os.path.join(image_dir, "ark_help.png")
 bottom_img_path = os.path.join(image_dir, 'bottom.png')
 #六星渐变图像
 rainbow_img_path = os.path.join(image_dir, 'rainbow.png')
-
 
 #结果目录
 res_dir = os.path.join(package_dir, 'res_file')
@@ -115,4 +122,18 @@ max_char_count = 20 #最多显示几个新角色/6星角色信息
 max_pool_count = 8  #最多显示几个卡池信息
 
 
+"""写日志"""
+from datetime import datetime
+log_file_path = get_user_config_path('ark_log.txt')
 
+def write_log2file(log_type:str, 
+                    log_info:str, 
+                    ark_log_file_path:str = log_file_path):
+    """
+    写日志
+    """
+    with open(ark_log_file_path, 'a') as f:
+        dt = datetime.now()
+        dt = dt.strftime('%Y-%m-%d_%H:%M:%S')
+        tot_log_info = f"{log_type:<10}|{dt:<25}|{log_info}\n-------------------------\n"
+        f.write(tot_log_info)
