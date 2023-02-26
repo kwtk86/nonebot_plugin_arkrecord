@@ -1,16 +1,17 @@
 import sqlite3 as sq, os
+import shutil
+
 import nonebot
 from nonebot.log import logger
 from .ark_utils import *
 from .ark_style import *
 
 # 读取基础配置
-# basic_config = nonebot.get_driver().config
-# if 'arkrecord_linux_user_name' in dir(basic_config):
-#     linux_user_name = basic_config.arkrecord_linux_user_name
-# else:
-#     linux_user_name = 'root'
-linux_user_name = 'root'
+basic_config = nonebot.get_driver().config
+if 'arkrecord_db_path' in dir(basic_config):
+    arkrecord_db_path = basic_config.arkrecord_db_path
+else:
+    raise RuntimeError("未配置数据库路径")
 
 #包根目录
 package_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,10 +21,8 @@ resource_dir = os.path.join(package_dir, 'resource')
 def get_user_config_path(config_file:str):
     import platform
     os_type = platform.system()
-    if os_type == "Windows":
-        db_dir = os.path.join(os.path.expanduser("~"), ".arkrecord")
-    elif os_type == "Linux":
-        db_dir = f"/{linux_user_name}/.arkrecord"
+    if os_type in ["Windows", "Linux"]:
+        db_dir = arkrecord_db_path
     else:
         logger.error("不支持的操作系统！开发者仅做了Windows和Linux的适配（由于没有苹果电脑）。建议联系开发者或自行修改源码。")
         raise RuntimeError("不支持的操作系统！开发者仅做了Windows和Linux的适配（由于没有苹果电脑）。建议联系开发者或自行修改源码。")
@@ -32,24 +31,18 @@ def get_user_config_path(config_file:str):
     user_db_path = os.path.join(db_dir, config_file)
     return user_db_path 
 
-db_name15 = "arkgacha_record.db"
-arkgacha_db_path15 = os.path.join(resource_dir, db_name15)
 db_name16 = "arkgacha_record16.db"
 arkgacha_db_path16 = os.path.join(resource_dir, db_name16)
 
 def init_db(user_db_path):
     if not os.path.exists(user_db_path):#如果数据库还未完成迁移
-        #如果用过1.5版本
-        import shutil
-        if os.path.exists(arkgacha_db_path15):
-            shutil.copy(arkgacha_db_path15, user_db_path)
-            os.rename(arkgacha_db_path15, arkgacha_db_path15.replace('.db', '_deprecated.db'))      
-        else:
-            shutil.copy(arkgacha_db_path16, user_db_path)
+        shutil.copy(arkgacha_db_path16, user_db_path)
+
 #sqlite文件
 user_db_path = get_user_config_path('arkgacha_record16.db')
 init_db(user_db_path)
 arkgacha_db = sq.connect(user_db_path)
+
 
 #干员头像目录
 operator_profile_dir = os.path.join(resource_dir, 'profile')
@@ -122,7 +115,11 @@ max_char_count = 20 #最多显示几个新角色/6星角色信息
 max_pool_count = 8  #最多显示几个卡池信息
 
 
-"""写日志"""
+"""
+写日志
+放到ark_utils里面好一点
+但是我懒得弄了
+"""
 from datetime import datetime
 log_file_path = get_user_config_path('ark_log.txt')
 

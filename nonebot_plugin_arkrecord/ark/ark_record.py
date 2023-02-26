@@ -1,11 +1,14 @@
 
 from nonebot.log import logger
 from nonebot.plugin import on_keyword
-from nonebot.adapters.onebot.v11 import Bot, Event, PrivateMessageEvent
+from nonebot.adapters.onebot.v11 import Bot, Event, PrivateMessageEvent, GroupMessageEvent
 from nonebot.adapters.onebot.v11.message import Message, MessageSegment
+from nonebot.typing import T_State
+
 from .ark_db import *
 from .ark_scrawl import *
 from .ark_setting import *
+from .ark_import import *
 
 def parse_user_token(raw_str:str) -> str:
     """
@@ -64,8 +67,42 @@ async def user_export_handle(bot: Bot, event: Event):
         name = response.split(os.sep)[-1],
     )  
 
+from urllib.parse import urlencode
+import requests as req
 
+import_record_event = on_keyword(['群文件测试'], priority = 80)
+@import_record_event.handle()
+async def import_record_handle(bot: Bot, event: GroupMessageEvent, state: T_State):
 
+    import_file_name = str(event.get_message()).split(' ')[1]
+    group_file_info = await bot.call_api("get_group_root_files", **{'group_id': event.group_id})
+    group_files = group_file_info['files']
+
+    for gfile in group_files: # 查找对应文件
+        if gfile['file_name'] == import_file_name:
+            import_busid, import_fid = gfile['busid'], gfile['file_id']
+            break
+    else: # 没有找到对应的文件
+        await user_analysis_event.finish(\
+            Message(\
+                '[CQ:at,qq={}]{}'.format(event.get_user_id(), "没有找到对应名称群文件")\
+                )
+            )
+
+    url = await bot.call_api("get_group_file_url", **{
+        'group_id': event.group_id,
+        'file_id': import_fid,
+        'bus_id': import_busid,
+    })
+    fname_data = {'fname': import_file_name}
+    url = url.get('url').rpartition("/")[0] + '/?' + urlencode(fname_data).replace('+', '%20')
+    fpath = download_file(url)
+    # download_fpath = await bot.call_api("download_file", **{
+    #     'url': url,
+    #     'thread_count': 1,
+    #     'headers': 'User-Agent=YOUR_UA[\r\n]Referer=https://www.baidu.com'
+    # })
+    # logger.info(download_fpath)
 
 user_analysis_event = on_keyword(['方舟抽卡分析','方舟寻访分析'], priority = 80)
 @user_analysis_event.handle()

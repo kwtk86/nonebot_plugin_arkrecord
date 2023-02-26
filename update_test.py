@@ -4,4 +4,6 @@ from nonebot_plugin_arkrecord.ark.ark_update import update_profile
 from nonebot_plugin_arkrecord.ark.ark_update import manual_update_pool
 # update_pool_info()
 # update_profile()
-manual_update_pool('测试数据', True)
+# manual_update_pool('测试数据', True)
+
+# 测试群文件获取
