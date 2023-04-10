@@ -14,7 +14,7 @@
 
 1、如果你还没有安装NoneBot2，可以参考[NoneBot2官网](https://nb2.baka.icu/)配置NoneBot2后再安装本插件
 
-2、本插件依赖于sqlite数据库，请参考网络资源（如[菜鸟教程](https://www.runoob.com/sqlite/sqlite-installation.html)）安装SQLite数据库，无需控制数据库用户、创建数据库表等操作。
+2、本插件依赖于sqlite数据库（版本≥3.38），请参考网络资源（如[菜鸟教程](https://www.runoob.com/sqlite/sqlite-installation.html)）安装SQLite数据库，无需控制数据库用户、创建数据库表等操作。
 但若为Windows环境，还需设置环境变量，无需配置数据库环境
 
 3、运行本插件前，需要在机器人的.env.prod文件中配置数据库储存路径，如
